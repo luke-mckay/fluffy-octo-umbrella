@@ -1,0 +1,83 @@
+CAPI=2:
+name: lemlogic:crlib:cpu65xx:0.0.0
+description: cpu65xx, a parameterized 6502 core
+
+filesets:
+  rtl:
+    files:
+      - rtl/cpu65xx.v
+    file_type: verilogSource
+
+  tb:
+    files:
+      - tb/tb_cpu65xx.sv
+    file_type: verilogSource
+
+  sf2_kickstart:
+    files:
+      # Synthesis files for SmartFusion2 KickStart Kit
+      - synthesis/todo.xdc:
+      file_type: xdc
+
+  xs3_sysboard:
+    files:
+      # Synthesis files for Digilent System Board for Xilinx Spartan-3
+      - synthesis/todo.xdc:
+      file_type: xdc
+
+  ice40_breakout:
+    files:
+      # Synthesis files for Lattice iCE40-HX8K Breakout Board
+      - synthesis/todo.xdc:
+      file_type: xdc
+
+targets:
+  default: &default
+    filesets:
+      - rtl
+    toplevel: cr_cpu65xx
+    parameters:
+      - clk_freq_hzTODO
+
+  # The "sim" target simulates the design.
+  sim:
+    <<: *default
+    description: Simulate the design
+    default_tool: icarus
+    filesets_append:
+      - tb
+    toplevel: tb_cpu65xx
+    tools:
+      icarus:
+        iverilog_options:
+          - -g2012 # Use SystemVerilog-2012
+      modelsim:
+        vlog_options:
+          - -timescale=1ns/1ns
+    parameters:
+      - pulses=10
+
+  # The "synth" target synthesizes the design for spartan3.
+  synth:
+    <<: *default
+    description: Synthesize the design for a Digilent System Board for Xilinx Spartan-3
+    default_tool: ise
+    filesets_append:
+      - xs3_sysboard
+    tools:
+      ise:
+        family: spartan3
+        device: xc3s200
+        package: ft256
+    parameters:
+      - clk_freq_hz=100000000
+
+parameters:
+  clk_freq_hz:
+    datatype    : int
+    description : Frequency of the board clock, in Hz
+    paramtype   : vlogparam
+  pulses:
+    datatype    : int
+    description : Number of pulses to run in testbench
+    paramtype   : vlogparam
