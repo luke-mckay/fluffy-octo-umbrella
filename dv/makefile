@@ -15,17 +15,7 @@ DUT_NAME=Vcpu65xx_core
 DUT_PATH=obj_dir
 include $(DUT_PATH)/$(DUT_NAME)_classes.mk
 include $(DUT_PATH)/$(DUT_NAME).mk
-OBJS+=$(DUT_PATH)/$(DUT_NAME).o $(DUT_PATH)/$(DUT_NAME)__Syms.o verilated.o $(DUT_PATH)/$(DUT_NAME)__Trace.o
-
-verilated.o:
-	$(CXX) $(CPPFLAGS) -c -o verilated.o /usr/share/verilator/include/verilated.cpp
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $^
-
-%.o: %.cpp
-	$(CXX) $(CPPFLAGS) -c -o $@ $^
-
+OBJS+=$(DUT_PATH)/$(DUT_NAME).o $(DUT_PATH)/$(DUT_NAME)__Syms.o $(DUT_PATH)/$(DUT_NAME)__Trace.o
 
 perfect6502/perfect6502.h:
 	git clone https://github.com/mist64/perfect6502.git
@@ -47,11 +37,11 @@ sindata.hex: sindata
 	./hex2v $< >$@
 
 .PHONY: all clean sim verilate
-sim: perfect6502/perfect6502.h $(OBJS) verilated.o
-	$(CXX) $(CPPFLAGS) $(OBJS) verilated.o
+sim: perfect6502/perfect6502.h $(OBJS) 
+	$(CXX) $(CPPFLAGS) $(OBJS) 
 
 verilate obj_dir/Vcpu65xx_core.mk:
-	cd ../rtl; verilator --cc cpu65xx_core.v --trace -Mdir ../dv/obj_dir
+	cd ../rtl; verilator --cc cpu65xx_core.v --exe --trace -Mdir ../dv/obj_dir
 	cd ../dv
 
 clean:

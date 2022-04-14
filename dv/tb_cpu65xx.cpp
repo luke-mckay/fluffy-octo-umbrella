@@ -28,7 +28,9 @@
 #include "verilated_vcd_c.h"
 
 // Model Includes
+extern "C" {
 #include "perfect6502/perfect6502.h"
+}
 
 // DUT Includes
 #include "obj_dir/Vcpu65xx_core.h"
