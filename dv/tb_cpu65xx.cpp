@@ -42,12 +42,25 @@ vluint64_t sim_time = 0;
 
 int main(int argc, char** argv, char** env)
 {
+  Verilated::mkdir("logs");
+
+  const std::unique_ptr<VerilatedContext> contextp{new VerilatedContext};
+
+  contextp->debug(0);
+
+  contextp->randReset(2);
+
+  contextp->traceEverOn(true);
+
+  contextp->commandArgs(argc, argv);
+
+
   Vcpu65xx_core *dut = new Vcpu65xx_core;
 
-  Verilated::traceEverOn(true);
+
   VerilatedVcdC *m_trace = new VerilatedVcdC;
   //dut->trace(m_trace, 5);
-  m_trace->open("waveform.vcd");
+  m_trace->open("logs/waveform.vcd");
 
 	int clk = 0;
 	void *state = initAndResetChip();
@@ -56,9 +69,11 @@ int main(int argc, char** argv, char** env)
 	//init_monitor();
 
 	/* emulate the 6502! */
-  while (sim_time < MAX_SIM_TIME)
+  while ( !contextp->gotFinish() &&
+          (sim_time < MAX_SIM_TIME) )
   {
 		step(state);
+    //ontextp->timeInc(1);  // 1 timeprecision period passes...
 		clk = !clk;
 
     //dut->clk ^= 1;
@@ -73,6 +88,13 @@ int main(int argc, char** argv, char** env)
 	};
 
   m_trace->close();
+  // top->final();
+
+#if VM_COVERAGE
+    Verilated::mkdir("logs");
+    contextp->coveragep()->write("logs/coverage.dat");
+#endif
+
   delete dut;
   exit(EXIT_SUCCESS);
 }
