@@ -2,4 +2,4 @@
 *.o
 dv/perfect6502
 dv/obj_dir
-dv/logs/*
+dv/logs

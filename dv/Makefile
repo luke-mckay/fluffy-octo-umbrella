@@ -1,27 +1,33 @@
-######################################################################
+# SPDX-License-Identifier: LGPL-2.1-or-later
 #
-# DESCRIPTION: Verilator Example: Small Makefile
+# MCS6500 Compatible MicroComputer TestBench
+# Copyright 2022, Luke E. McKay.
 #
-# This calls the object directory makefile.  That allows the objects to
-# be placed in the "current directory" which simplifies the Makefile.
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
 #
-# This file ONLY is placed under the Creative Commons Public Domain, for
-# any use, without warranty, 2020 by Wilson Snyder.
-# SPDX-License-Identifier: CC0-1.0
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
-######################################################################
-# Check for sanity to avoid later confusion
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
+
+#******************************************************************************
+#*Check for sanity to avoid later confusion
 
 ifneq ($(words $(CURDIR)),1)
  $(error Unsupported: GNU Make cannot build in directories containing spaces, build elsewhere: '$(CURDIR)')
 endif
 
-######################################################################
-# Set up variables
+#******************************************************************************
+#*Set up variables
 
-# If $VERILATOR_ROOT isn't in the environment, we assume it is part of a
-# package install, and verilator is in your path. Otherwise find the
-# binary relative to $VERILATOR_ROOT (such as when inside the git sources).
 ifeq ($(VERILATOR_ROOT),)
 VERILATOR = verilator
 VERILATOR_COVERAGE = verilator_coverage
@@ -57,10 +63,10 @@ PERFECT_SOURCE=perfect6502/perfect6502.c perfect6502/netlist_sim.c
 VERILATOR_INPUT = ../rtl/cpu65xx_core.v tb_cpu65xx.cpp $(PERFECT_SOURCE)
 #sim_main.cpp
 
-######################################################################
+#******************************************************************************
 default: run
 
-run: perfect6502/perfect6502.h
+run:
 	@echo
 	@echo "-- Verilator tracing example"
 
@@ -95,11 +101,8 @@ run: perfect6502/perfect6502.h
 	@echo
 
 
-######################################################################
-# Other targets
-
-perfect6502/perfect6502.h:
-	git clone https://github.com/mist64/perfect6502.git
+#******************************************************************************
+#*Other targets
 
 %.hex: %.asm
 	gpasm $<
@@ -110,4 +113,4 @@ show-config:
 
 maintainer-copy::
 clean mostlyclean distclean maintainer-clean::
-	-rm -rf obj_dir logs *.log *.dmp *.vpd coverage.dat core perfect6502
+	-rm -rf obj_dir logs coverage.dat core perfect6502

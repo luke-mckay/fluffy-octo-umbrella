@@ -1,16 +1,24 @@
-# -*- Makefile -*-
-#######################################################################
+# SPDX-License-Identifier: LGPL-2.1-or-later
 #
-# DESCRIPTION: Verilator Example: Makefile for inside object directory
+# MCS6500 Compatible MicroComputer TestBench
+# Copyright 2022, Luke E. McKay.
 #
-# This is executed in the object directory, and called by ../Makefile
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
 #
-# This file ONLY is placed under the Creative Commons Public Domain, for
-# any use, without warranty, 2020 by Wilson Snyder.
-# SPDX-License-Identifier: CC0-1.0
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
 #
-#######################################################################
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+# USA
 
+#******************************************************************************
 default: Vcpu65xx_core
 
 # Include the rules made by Verilator
@@ -19,8 +27,8 @@ include Vcpu65xx_core.mk
 # Use OBJCACHE (ccache) if using gmake and its installed
 COMPILE.cc = $(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c
 
-#######################################################################
-# Compile flags
+#******************************************************************************
+#*Compile flags
 
 # Turn on creating .d make dependency files
 CPPFLAGS += -MMD -MP
@@ -45,9 +53,8 @@ OPT_FAST = -Os -fstrict-aliasing
 #OPT_FAST = -O
 #OPT_FAST =
 
-######################################################################
-######################################################################
-# Automatically understand dependencies
+#******************************************************************************
+#*Automatically understand dependencies
 
 DEPS := $(wildcard *.d)
 ifneq ($(DEPS),)
