@@ -66,7 +66,10 @@ VERILATOR_INPUT = ../rtl/cpu65xx_core.v tb_cpu65xx.cpp $(PERFECT_SOURCE)
 #******************************************************************************
 default: run
 
-run:
+TEST_PROGRAMS = 65xxTest1_ProgramCounter.bin
+## 65xxTest2_NmosOps.bin
+
+run: $(TEST_PROGRAMS)
 	@echo
 	@echo "-- Verilator tracing example"
 
@@ -88,7 +91,7 @@ run:
 	@echo "-- RUN ---------------------"
 	@rm -rf logs
 	@mkdir -p logs
-	obj_dir/Vcpu65xx_core +trace
+	obj_dir/Vcpu65xx_core +trace --file=$(TEST_PROGRAMS)
 
 	@echo
 	@echo "-- COVERAGE ----------------"
@@ -104,9 +107,8 @@ run:
 #******************************************************************************
 #*Other targets
 
-%.hex: %.asm
-	gpasm $<
-	sed -i '1d' $@
+%.bin: %.asm
+	64tass $< -o $@
 
 show-config:
 	$(VERILATOR) -V
